@@ -1,45 +1,82 @@
-# [Project name]
+# KANDALA MINI BOT
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A WhatsApp bot paired via Telegram. Link your WhatsApp using the Telegram control panel, then use all commands directly on WhatsApp.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/api-server run dev` — run the bot server (port 8080)
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Required env: `TELEGRAM_BOT_TOKEN` — from @BotFather on Telegram
+- Optional env: `OPENAI_API_KEY` — enables .ai / .gpt commands
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
 - API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
+- WhatsApp: @whiskeysockets/baileys (pairing code auth)
+- Telegram: Telegraf
+- AI: OpenAI API
 - Build: esbuild (CJS bundle)
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/api-server/src/bot/` — all bot logic
+- `artifacts/api-server/src/bot/telegram.ts` — Telegram control panel bot
+- `artifacts/api-server/src/bot/whatsapp.ts` — WhatsApp (Baileys) connection
+- `artifacts/api-server/src/bot/commands/` — all command handlers
+- `.baileys_auth/` — WhatsApp session (auto-created, do not delete while bot is linked)
+
+## How to Link WhatsApp
+
+1. Go to your Telegram bot (created via @BotFather)
+2. Send: `/pair 254743760083` (use your actual WhatsApp number)
+3. Copy the 8-character code returned
+4. Open WhatsApp → Settings → Linked Devices → Link a Device → Link with phone number
+5. Enter the code → Done!
+
+## WhatsApp Commands (prefix: `.`)
+
+| Command | Description |
+|---------|-------------|
+| .menu | Show all commands |
+| .alive | Bot status |
+| .ping | Check bot speed |
+| .owner | Owner info |
+| .sticker | Image/video → sticker |
+| .toimg | Sticker → image |
+| .tts [text] | Text to speech |
+| .ytmp3 [url] | YouTube audio |
+| .ytmp4 [url] | YouTube video |
+| .ai [question] | AI chat |
+| .gpt [question] | GPT chat |
+| .tagall | Tag all group members |
+| .kick @user | Kick from group |
+| .add [number] | Add to group |
+| .promote @user | Make admin |
+| .demote @user | Remove admin |
+| .antilink on/off | Anti-link protection |
+| .grouplink | Get group invite link |
+| .joke | Random joke |
+| .fact | Random fact |
+| .quote | Random quote |
+| .roast | Random roast |
+| .weather [city] | Weather info |
+| .wiki [query] | Wikipedia summary |
+| .calc [expr] | Calculator |
+| .define [word] | Dictionary |
+| .translate [lang] [text] | Translate text |
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
-
-## Product
-
-_Describe the high-level user-facing capabilities of this app once they exist._
+- WhatsApp session stored in `.baileys_auth/` using Baileys `useMultiFileAuthState`
+- Telegram bot is the control panel; WhatsApp handles all user commands
+- Commands use the `.` prefix (e.g. `.menu`, `.sticker`)
+- All Baileys/native packages externalized from esbuild bundle
+- Anti-link groups stored in memory (reset on restart; re-enable with `.antilink on`)
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
-
-## Gotchas
-
-_Populate as you build — sharp edges, "always run X before Y" rules._
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- Owner number: 254743760083
+- Bot name: KANDALA MINI BOT
+- Command prefix: `.`
