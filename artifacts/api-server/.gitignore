@@ -1,0 +1,15 @@
+# Build output
+dist/
+
+# WhatsApp session — NEVER commit these
+.baileys_auth/
+
+# Env
+.env
+.env.*
+
+# Logs
+*.log
+
+# Node
+node_modules/
