@@ -43,12 +43,20 @@ function getMessageText(msg: WAMessage): string {
 }
 
 export async function handleMessage(sock: WASocket, msg: WAMessage) {
-  if (msg.key.fromMe) return;
   if (!msg.message) return;
 
   const jid = msg.key.remoteJid!;
+  if (!jid) return;
+
   const text = getMessageText(msg).trim();
-  const senderJid = msg.key.participant ?? jid;
+
+  // Ignore empty messages and protocol messages
+  if (!text) return;
+
+  // Determine real sender:
+  // - In groups: msg.key.participant is the member who sent it
+  // - In DMs: msg.key.remoteJid is the other person; if fromMe it's us
+  const senderJid = msg.key.participant ?? (msg.key.fromMe ? (sock.user?.id ?? jid) : jid);
 
   // Run anti-link check for all messages in groups
   if (jid.endsWith("@g.us")) {

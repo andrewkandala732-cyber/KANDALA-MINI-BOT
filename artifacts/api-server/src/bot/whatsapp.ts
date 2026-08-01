@@ -21,8 +21,23 @@ const MAX_RECONNECT = 10;
 
 function attachMessageHandler(sock: WASocket) {
   sock.ev.on("messages.upsert", async ({ messages, type }) => {
-    if (type !== "notify") return;
+    logger.info({ type, count: messages.length }, "📨 messages.upsert received");
+
     for (const msg of messages) {
+      const text =
+        msg.message?.conversation ||
+        msg.message?.extendedTextMessage?.text ||
+        msg.message?.imageMessage?.caption ||
+        msg.message?.videoMessage?.caption ||
+        "";
+      logger.info(
+        { from: msg.key.remoteJid, fromMe: msg.key.fromMe, type, text: text.slice(0, 80) },
+        "📩 raw message"
+      );
+
+      // Accept both "notify" (new msg) and "append" (e.g. from linked-device sync)
+      if (type !== "notify" && type !== "append") continue;
+
       try {
         await handleMessage(sock, msg);
       } catch (err) {
