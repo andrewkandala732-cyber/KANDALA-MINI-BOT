@@ -95,6 +95,19 @@ import {
   wwenewsCommand, wwescheduleCommand, wrestlingeventsCommand,
 } from "./sports.js";
 
+// Placeholders for missing commands
+import {
+  ephoto360menuCommand, apkCommand, downloadCommand, gdriveCommand, gitcloneCommand,
+  igaudioCommand, itunesCommand, mediafireCommand, pinCommand, savestatusCommand,
+  telestickerCommand, xvideoCommand, addcodeCommand, allowCommand, groupstatusPickerCommand,
+  fetchgroupsCommand, tosgroupCommand, autosavestatusCommand, azaCommand, deljunkCommand,
+  delstickercmdCommand, dlvoCommand, gcaddprivacyCommand, hostipCommand, lastseenCommand,
+  listbadwordCommand, listignorelistCommand, listsudoCommand, modestatusCommand, ppprivacyCommand,
+  readreceiptsCommand, filtervcfCommand, gsmarenaCommand, obfuscateCommand, runevalCommand,
+  sayCommand, sswebCommand, sswebpcCommand, sswebtabCommand, takeCommand, texttopdfCommand,
+  tourlCommand, toviewonceCommand, vccCommand, volvideoCommand
+} from "./placeholders.js";
+
 function getMessageText(msg: WAMessage): string {
   return (
     msg.message?.conversation ||
@@ -161,7 +174,7 @@ export async function handleMessage(sock: WASocket, msg: WAMessage) {
   try {
     switch (command) {
 
-      // ── General ────────────────────────────────────────────────────────────
+      // ── General ─────────────────────────────────────────────────────────[...]
       case "menu": case "help": await menuCommand(sock, msg); break;
       case "alive":             await aliveCommand(sock, msg); break;
       case "ping":              await pingCommand(sock, msg); break;
@@ -175,13 +188,13 @@ export async function handleMessage(sock: WASocket, msg: WAMessage) {
       case "userid":            await useridCommand(sock, msg); break;
       case "botinfo":           await botstatusCommand(sock, msg); break;
 
-      // ── Media ──────────────────────────────────────────────────────────────
+      // ── Media ─────────────────────────────────────────────────────────��[...]
       case "s": case "sticker": await stickerCommand(sock, msg); break;
       case "toimg": case "toimage": await toimgCommand(sock, msg); break;
       case "tts":               await ttsCommand(sock, msg, args); break;
       case "remini":            await reminiCommand(sock, msg); break;
 
-      // ── AI ─────────────────────────────────────────────────────────────────
+      // ── AI ──────────────────────────────────────────────────────────��[...]
       case "ai": case "gpt": case "chatgpt": await aiCommand(sock, msg, args); break;
       case "blackbox":          await blackboxCommand(sock, msg, args); break;
       case "code":              await codeCommand(sock, msg, args); break;
@@ -197,7 +210,7 @@ export async function handleMessage(sock: WASocket, msg: WAMessage) {
       case "translate2":        await translate2Command(sock, msg, args); break;
       case "generate": case "dalle": await generateCommand(sock, msg, args); break;
 
-      // ── Audio ──────────────────────────────────────────────────────────────
+      // ── Audio ─────────────────────────────────────────────────────────��[...]
       case "tomp3":             await tomp3Command(sock, msg); break;
       case "toaudio":           await toaudioCommand(sock, msg); break;
       case "bass":              await bassCommand(sock, msg); break;
@@ -209,7 +222,7 @@ export async function handleMessage(sock: WASocket, msg: WAMessage) {
       case "volaudio":          await volaudioCommand(sock, msg, args); break;
       case "toptt":             await toppttCommand(sock, msg); break;
 
-      // ── Downloads ──────────────────────────────────────────────────────────
+      // ── Downloads ────────────────────────────────────────────────────────�[...]
       case "ytmp3": case "ytaudio": await ytdlCommand(sock, msg, args, "audio"); break;
       case "ytmp4": case "ytvideo": await ytdlCommand(sock, msg, args, "video"); break;
       case "tiktok":            await tiktokCommand(sock, msg, args); break;
@@ -224,7 +237,7 @@ export async function handleMessage(sock: WASocket, msg: WAMessage) {
       case "image":             await imageCommand(sock, msg, args); break;
       case "wallpaper":         await wallpaperCommand(sock, msg, args); break;
 
-      // ── Fun & Games ────────────────────────────────────────────────────────
+      // ── Fun & Games ───────────────────────────────────────────────────────��[...]
       case "truth":             await truthCommand(sock, msg); break;
       case "dare":              await dareCommand(sock, msg); break;
       case "truthordare":       await truthordareCommand(sock, msg); break;
@@ -237,7 +250,7 @@ export async function handleMessage(sock: WASocket, msg: WAMessage) {
       case "truthdetector":     await truthdetectorCommand(sock, msg, args); break;
       case "xxqc":              await xxqcCommand(sock, msg); break;
 
-      // ── Religion ───────────────────────────────────────────────────────────
+      // ── Religion ────────────────────────────────────────────────────────��[...]
       case "bible":             await bibleCommand(sock, msg, args); break;
       case "quran":             await quranCommand(sock, msg, args); break;
 
@@ -253,7 +266,7 @@ export async function handleMessage(sock: WASocket, msg: WAMessage) {
       case "yts":               await ytsCommand(sock, msg, args); break;
       case "shazam":            await shazamCommand(sock, msg); break;
 
-      // ── Tools ──────────────────────────────────────────────────────────────
+      // ── Tools ─────────────────────────────────────────────────────────��[...]
       case "qrcode":            await qrcodeCommand(sock, msg, args); break;
       case "fancy":             await fancyCommand(sock, msg, args); break;
       case "fliptext":          await fliptextCommand(sock, msg, args); break;
@@ -263,7 +276,7 @@ export async function handleMessage(sock: WASocket, msg: WAMessage) {
       case "emojimix":          await emojimixCommand(sock, msg, args); break;
       case "tinyurl":           await tinyurlCommand(sock, msg, args); break;
 
-      // ── Sports ─────────────────────────────────────────────────────────────
+      // ── Sports ─────────────────────────────────────────────────────────�[...]
       case "eplstandings":      await eplstandingsCommand(sock, msg); break;
       case "eplmatches":        await eplmatchesCommand(sock, msg); break;
       case "eplupcoming":       await eplupcomingCommand(sock, msg); break;
@@ -353,7 +366,7 @@ export async function handleMessage(sock: WASocket, msg: WAMessage) {
       case "antipoll":          await antipollCommand(sock, msg, args); break;
       case "antireaction":      await antireactionCommand(sock, msg, args); break;
 
-      // ── Settings ──────────────────────────────────────────────────────────────
+      // ── Settings ────────────────────────────────────────────────────────��[...]
       case "mode": await modeCommand(sock, msg, args); break;
       case "getsettings": await getsettingsCommand(sock, msg); break;
       case "setbotname": await setbotnameCommand(sock, msg, args); break;
@@ -365,6 +378,53 @@ export async function handleMessage(sock: WASocket, msg: WAMessage) {
       case "setwatermark": await setwatermarkCommand(sock, msg, args); break;
       case "setstickerpackname": await setstickerpacknameCommand(sock, msg, args); break;
       case "setstickerauthor": await setstickerauthorCommand(sock, msg, args); break;
+
+      // ── Placeholder / Newly added commands (missing in original)
+      case "ephoto360menu":     await ephoto360menuCommand(sock, msg); break;
+      case "apk":               await apkCommand(sock, msg, args); break;
+      case "download":          await downloadCommand(sock, msg, args); break;
+      case "gdrive":            await gdriveCommand(sock, msg, args); break;
+      case "gitclone":          await gitcloneCommand(sock, msg, args); break;
+      case "igaudio":           await igaudioCommand(sock, msg, args); break;
+      case "itunes":            await itunesCommand(sock, msg, args); break;
+      case "mediafire":         await mediafireCommand(sock, msg, args); break;
+      case "pin":               await pinCommand(sock, msg, args); break;
+      case "savestatus":        await savestatusCommand(sock, msg, args); break;
+      case "telesticker":       await telestickerCommand(sock, msg, args); break;
+      case "xvideo":            await xvideoCommand(sock, msg, args); break;
+      case "addcode":           await addcodeCommand(sock, msg, args); break;
+      case "allow":             await allowCommand(sock, msg, args); break;
+      case "__groupstatus_picker__": await groupstatusPickerCommand(sock, msg, args); break;
+      case "fetchgroups":       await fetchgroupsCommand(sock, msg, args); break;
+      case "tosgroup":          await tosgroupCommand(sock, msg, args); break;
+      case "autosavestatus":    await autosavestatusCommand(sock, msg, args); break;
+      case "aza":               await azaCommand(sock, msg, args); break;
+      case "deljunk":           await deljunkCommand(sock, msg, args); break;
+      case "delstickercmd":     await delstickercmdCommand(sock, msg, args); break;
+      case "dlvo":              await dlvoCommand(sock, msg, args); break;
+      case "gcaddprivacy":      await gcaddprivacyCommand(sock, msg, args); break;
+      case "hostip":            await hostipCommand(sock, msg); break;
+      case "lastseen":          await lastseenCommand(sock, msg, args); break;
+      case "listbadword":       await listbadwordCommand(sock, msg); break;
+      case "listignorelist":    await listignorelistCommand(sock, msg); break;
+      case "listsudo":          await listsudoCommand(sock, msg); break;
+      case "modestatus":        await modestatusCommand(sock, msg, args); break;
+      case "ppprivacy":         await ppprivacyCommand(sock, msg, args); break;
+      case "readreceipts":      await readreceiptsCommand(sock, msg, args); break;
+      case "filtervcf":         await filtervcfCommand(sock, msg, args); break;
+      case "gsmarena":          await gsmarenaCommand(sock, msg, args); break;
+      case "obfuscate":         await obfuscateCommand(sock, msg, args); break;
+      case "runeval":           await runevalCommand(sock, msg, args); break;
+      case "say":               await sayCommand(sock, msg, args); break;
+      case "ssweb":             await sswebCommand(sock, msg, args); break;
+      case "sswebpc":           await sswebpcCommand(sock, msg, args); break;
+      case "sswebtab":          await sswebtabCommand(sock, msg, args); break;
+      case "take":              await takeCommand(sock, msg, args); break;
+      case "texttopdf":         await texttopdfCommand(sock, msg, args); break;
+      case "tourl":             await tourlCommand(sock, msg, args); break;
+      case "toviewonce":        await toviewonceCommand(sock, msg, args); break;
+      case "vcc":               await vccCommand(sock, msg, args); break;
+      case "volvideo":          await volvideoCommand(sock, msg, args); break;
 
       default:
         await sock.sendMessage(
