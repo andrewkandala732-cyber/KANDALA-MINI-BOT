@@ -2,12 +2,14 @@ import type { WASocket, WAMessage } from "@whiskeysockets/baileys";
 import { botState } from "../store.js";
 
 const P = () => botState.botSettings.prefix;
+const BOT_IMAGE_URL = "https://files.catbox.moe/pht92g.jpg";
 
 export async function menuCommand(sock: WASocket, msg: WAMessage) {
   const jid = msg.key.remoteJid!;
   const p = P();
-  const menu = `
-╔══════════════════════════════╗
+  const mode = botState.botSettings.mode;
+  const modeIcon = mode === "public" ? "🌍" : mode === "group" ? "👥" : "🔒";
+  const menu = `╔══════════════════════════════╗
 ║   🤖 *${botState.botName}*  ║
 ╚══════════════════════════════╝
 
@@ -24,9 +26,18 @@ Type *${p}[category]menu* for details.
 │➽ ${p}translatemenu  ${p}videomenu
 ┗▣
 
-📌 *Prefix:* ${p}  |  👤 *Owner:* wa.me/${botState.botSettings.ownerNumber}
-`;
-  await sock.sendMessage(jid, { text: menu }, { quoted: msg });
+📌 *Prefix:* ${p}
+${modeIcon} *Mode:* ${mode.toUpperCase()}
+👤 *Owner:* wa.me/${botState.botSettings.ownerNumber}`;
+
+  try {
+    await sock.sendMessage(jid, {
+      image: { url: BOT_IMAGE_URL },
+      caption: menu,
+    }, { quoted: msg });
+  } catch {
+    await sock.sendMessage(jid, { text: menu }, { quoted: msg });
+  }
 }
 
 export async function aimenuCommand(sock: WASocket, msg: WAMessage) {

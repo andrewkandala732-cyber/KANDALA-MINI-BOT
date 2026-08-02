@@ -1,21 +1,36 @@
 import type { WASocket, WAMessage } from "@whiskeysockets/baileys";
 import { botState } from "../store.js";
 
+const BOT_IMAGE_URL = "https://files.catbox.moe/pht92g.jpg";
+
 export async function aliveCommand(sock: WASocket, msg: WAMessage) {
   const jid = msg.key.remoteJid!;
   const uptime = getUptime();
-  const text = `
-✅ *KANDALA MINI BOT is ALIVE!*
+  const mode = botState.botSettings.mode;
+  const modeIcon = mode === "public" ? "🌍" : mode === "group" ? "👥" : "🔒";
+  const caption = `
+✅ *${botState.botName} is ALIVE!*
 
 🤖 *Bot Name:* ${botState.botName}
-⚡ *Status:* Online
+⚡ *Status:* Online & Ready
 🕐 *Uptime:* ${uptime}
+${modeIcon} *Mode:* ${mode.toUpperCase()}
+🔤 *Prefix:* ${botState.botSettings.prefix}
 📅 *Started:* ${botState.startTime.toLocaleString()}
-🔗 *Owner:* wa.me/254743760083
+🔗 *Owner:* wa.me/${botState.botSettings.ownerNumber}
 
 > _All systems operational_ 🚀
-`;
-  await sock.sendMessage(jid, { text }, { quoted: msg });
+`.trim();
+
+  try {
+    await sock.sendMessage(jid, {
+      image: { url: BOT_IMAGE_URL },
+      caption,
+    }, { quoted: msg });
+  } catch {
+    // Fallback to text if image fails
+    await sock.sendMessage(jid, { text: caption }, { quoted: msg });
+  }
 }
 
 function getUptime(): string {
