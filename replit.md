@@ -1,45 +1,60 @@
-# [Project name]
+# KANDALA MINI BOT
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A WhatsApp bot with a Telegram control panel. Link your WhatsApp via Telegram, then control the bot with `.` prefixed commands in any chat or group.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/api-server run dev` — run the API + bot server
 - `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+
+## Required Environment Variables
+
+- `TELEGRAM_BOT_TOKEN` — from [@BotFather](https://t.me/BotFather) on Telegram. Used to control WhatsApp linking.
+- `OPENAI_API_KEY` *(optional)* — enables the `.ai` / `.gpt` commands.
+
+## How to Link WhatsApp
+
+1. Set `TELEGRAM_BOT_TOKEN` and restart the server
+2. Open your Telegram bot and send `/pair 254XXXXXXXXX` (your number in international format)
+3. Enter the 8-digit code in WhatsApp → Linked Devices → Link with phone number
+4. Send `/status` to confirm connection
+
+## Bot Commands (prefix: `.`)
+
+| Category | Commands |
+|---|---|
+| General | `.menu`, `.alive`, `.ping`, `.owner` |
+| Media | `.sticker`, `.toimg`, `.tts [text]` |
+| Download | `.ytmp3 [url]`, `.ytmp4 [url]` |
+| AI | `.ai [question]`, `.gpt [question]` |
+| Group | `.tagall`, `.kick`, `.add`, `.promote`, `.demote`, `.antilink on/off`, `.grouplink`, `.revoke`, `.open`, `.close` |
+| Fun | `.joke`, `.fact`, `.quote`, `.roast` |
+| Info | `.weather [city]`, `.wiki [query]`, `.calc [expr]`, `.define [word]`, `.translate [lang] [text]` |
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
+- WhatsApp: @whiskeysockets/baileys
+- Telegram: telegraf
+- AI: openai (gpt-4o-mini)
+- Media: sharp, ffmpeg-static, @distube/ytdl-core
 - API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
-
-## Architecture decisions
-
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
-
-## Product
-
-_Describe the high-level user-facing capabilities of this app once they exist._
+- `artifacts/api-server/src/bot/` — all bot logic
+- `artifacts/api-server/src/bot/commands/` — individual command handlers
+- `artifacts/api-server/src/bot/whatsapp.ts` — WhatsApp connection + pairing
+- `artifacts/api-server/src/bot/telegram.ts` — Telegram control panel
+- `.baileys_auth/` — WhatsApp session (auto-created, gitignored)
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Owner number: 254743760083
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- Bot auto-reconnects on disconnect (up to 10 attempts with exponential backoff)
+- WhatsApp session persists in `.baileys_auth/` — restart won't require re-pairing
+- The `.sticker` command requires ffmpeg (bundled via ffmpeg-static)
+- Anti-link state is in-memory only — resets on restart

@@ -70,8 +70,12 @@ autoInstallPeers: false
 
 onlyBuiltDependencies:
   - '@swc/core'
+  - '@whiskeysockets/baileys'
   - esbuild
+  - ffmpeg-static
   - msw
+  - protobufjs
+  - sharp
   - unrs-resolver
 
 overrides:
