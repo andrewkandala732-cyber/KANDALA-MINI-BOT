@@ -10,7 +10,7 @@ import { mkdir, rm } from "node:fs/promises";
 import { join } from "node:path";
 import { logger } from "../lib/logger.js";
 import { botState } from "./store.js";
-import { handleMessage } from "./commands/index.js";
+import { handleMessage, handleGroupParticipantUpdate } from "./commands/index.js";
 
 export const AUTH_DIR = join(process.cwd(), ".baileys_auth");
 
@@ -20,6 +20,10 @@ let reconnectAttempts = 0;
 const MAX_RECONNECT = 10;
 
 function attachMessageHandler(sock: WASocket) {
+  sock.ev.on("group-participants.update", async (update) => {
+    try { await handleGroupParticipantUpdate(sock, update); } catch {}
+  });
+
   sock.ev.on("messages.upsert", async ({ messages, type }) => {
     logger.info({ type, count: messages.length }, "📨 messages.upsert received");
 
