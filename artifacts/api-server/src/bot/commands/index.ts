@@ -20,6 +20,13 @@ import {
 } from "./extra.js";
 import { botState } from "../store.js";
 
+// Settings
+import {
+  modeCommand, getsettingsCommand, setbotnameCommand, setownernameCommand,
+  setownernumberCommand, setprefixCommand, settimezoneCommand, setstatusemojiCommand,
+  setwatermarkCommand, setstickerpacknameCommand, setstickerauthorCommand,
+} from "./settings.js";
+
 // AI2
 import {
   codeCommand, storyCommand, recipeCommand, summarizeCommand, analyzeCommand,
@@ -345,6 +352,19 @@ export async function handleMessage(sock: WASocket, msg: WAMessage) {
       case "antidocument":      await antidocumentCommand(sock, msg, args); break;
       case "antipoll":          await antipollCommand(sock, msg, args); break;
       case "antireaction":      await antireactionCommand(sock, msg, args); break;
+
+      // ── Settings ──────────────────────────────────────────────────────────────
+      case "mode": await modeCommand(sock, msg, args); break;
+      case "getsettings": await getsettingsCommand(sock, msg); break;
+      case "setbotname": await setbotnameCommand(sock, msg, args); break;
+      case "setownername": await setownernameCommand(sock, msg, args); break;
+      case "setownernumber": await setownernumberCommand(sock, msg, args); break;
+      case "setprefix": await setprefixCommand(sock, msg, args); break;
+      case "settimezone": await settimezoneCommand(sock, msg, args); break;
+      case "setstatusemoji": await setstatusemojiCommand(sock, msg, args); break;
+      case "setwatermark": await setwatermarkCommand(sock, msg, args); break;
+      case "setstickerpackname": await setstickerpacknameCommand(sock, msg, args); break;
+      case "setstickerauthor": await setstickerauthorCommand(sock, msg, args); break;
 
       default:
         await sock.sendMessage(
