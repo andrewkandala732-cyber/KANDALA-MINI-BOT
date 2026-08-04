@@ -105,10 +105,18 @@ function attachHandlers(sock: WASocket) {
       );
 
       if (type !== "notify" && type !== "append") continue;
-      if (msg.key.fromMe) continue;
 
-      const senderJid = msg.key.participant ?? msg.key.remoteJid ?? "";
-      const isOwner = senderJid.includes(botState.ownerJid.split("@")[0]!);
+      // fromMe = owner sent this from their own device.
+      // Only let it through if it starts with the command prefix; skip everything else
+      // (avoids reacting to the bot's own replies, which also arrive as fromMe).
+      const isFromMe = !!msg.key.fromMe;
+      if (isFromMe && !text.startsWith(botState.botSettings.prefix)) continue;
+
+      // For fromMe, treat the sender as the owner regardless of @lid JID format.
+      const senderJid = isFromMe
+        ? botState.ownerJid
+        : (msg.key.participant ?? msg.key.remoteJid ?? "");
+      const isOwner = isFromMe || senderJid.includes(botState.ownerJid.split("@")[0]!);
 
       // ── Ignore list ──────────────────────────────────────────────────────────
       if (botState.botSettings.ignoreList.includes(senderJid)) continue;
@@ -125,30 +133,33 @@ function attachHandlers(sock: WASocket) {
         }
       }
 
-      // ── Auto read ────────────────────────────────────────────────────────────
-      if (botState.botSettings.autoRead) {
-        try { await sock.readMessages([msg.key]); } catch {}
-      }
+      // Skip presence/react features for the owner's own commands
+      if (!isFromMe) {
+        // ── Auto read ──────────────────────────────────────────────────────────
+        if (botState.botSettings.autoRead) {
+          try { await sock.readMessages([msg.key]); } catch {}
+        }
 
-      // ── Auto record / typing presence ────────────────────────────────────────
-      if (botState.botSettings.autoRecord) {
-        try { await sock.sendPresenceUpdate("recording", jid); } catch {}
-      } else if (botState.botSettings.autoRecordTyping) {
-        try { await sock.sendPresenceUpdate("composing", jid); } catch {}
-      }
+        // ── Auto record / typing presence ──────────────────────────────────────
+        if (botState.botSettings.autoRecord) {
+          try { await sock.sendPresenceUpdate("recording", jid); } catch {}
+        } else if (botState.botSettings.autoRecordTyping) {
+          try { await sock.sendPresenceUpdate("composing", jid); } catch {}
+        }
 
-      // ── Always online: refresh presence ──────────────────────────────────────
-      if (botState.botSettings.alwaysOnline) {
-        try { await sock.sendPresenceUpdate("available"); } catch {}
-      }
+        // ── Always online: refresh presence ────────────────────────────────────
+        if (botState.botSettings.alwaysOnline) {
+          try { await sock.sendPresenceUpdate("available"); } catch {}
+        }
 
-      // ── Auto react ───────────────────────────────────────────────────────────
-      if (botState.botSettings.autoReact && msg.key.id) {
-        try {
-          await sock.sendMessage(jid, {
-            react: { text: botState.botSettings.autoReactEmoji, key: msg.key },
-          });
-        } catch {}
+        // ── Auto react ─────────────────────────────────────────────────────────
+        if (botState.botSettings.autoReact && msg.key.id) {
+          try {
+            await sock.sendMessage(jid, {
+              react: { text: botState.botSettings.autoReactEmoji, key: msg.key },
+            });
+          } catch {}
+        }
       }
 
       // ── Anti view-once: re-send to owner as normal media ─────────────────────
