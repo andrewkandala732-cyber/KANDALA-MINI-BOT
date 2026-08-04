@@ -98,6 +98,16 @@ import {
   modeCommand, getsettingsCommand, setbotnameCommand, setownernameCommand,
   setownernumberCommand, setprefixCommand, settimezoneCommand, setstatusemojiCommand,
   setwatermarkCommand, setstickerpacknameCommand, setstickerauthorCommand,
+  alwaysonlineCommand, anticallCommand, setanticallmsgCommand,
+  antideleteCommand, antideletestatusCommand, antieditCommand,
+  antiviewonceCommand, antibugCommand,
+  autoreactCommand, autoreactstatusCommand, autoreadCommand,
+  autorecordCommand, autorecordtypingCommand, autoblockCommand, autobioCommand,
+  addbadwordCommand, deletebadwordCommand, listbadwordCommand,
+  addcountrycodeCommand, delcountrycodeCommand, listcountrycodeCommand,
+  addignorelistCommand, delignorelistCommand, listignorelistCommand,
+  addsudoCommand, delsudoCommand, listsudoCommand,
+  addmenuimageCommand, addmenuvideoCommand, clearmenuimagesCommand, clearmenuvideoCommand,
 } from "./settings.js";
 
 // ── Downloads Extended ────────────────────────────────────────────────────────
@@ -387,6 +397,44 @@ export async function handleMessage(sock: WASocket, msg: WAMessage) {
       case "setwatermark": await setwatermarkCommand(sock, msg, args); break;
       case "setstickerpackname": await setstickerpacknameCommand(sock, msg, args); break;
       case "setstickerauthor": await setstickerauthorCommand(sock, msg, args); break;
+       // Auto features
+       case "alwaysonline": await alwaysonlineCommand(sock, msg, args); break;
+       case "autoreact": await autoreactCommand(sock, msg, args); break;
+       case "autoreactstatus": await autoreactstatusCommand(sock, msg, args); break;
+       case "autoread": await autoreadCommand(sock, msg, args); break;
+       case "autorecord": await autorecordCommand(sock, msg, args); break;
+       case "autorecordtyping": await autorecordtypingCommand(sock, msg, args); break;
+       case "autoblock": await autoblockCommand(sock, msg, args); break;
+       case "autobio": await autobioCommand(sock, msg, args); break;
+       // Anti features
+       case "anticall": await anticallCommand(sock, msg, args); break;
+       case "setanticallmsg": await setanticallmsgCommand(sock, msg, args); break;
+       case "antidelete": await antideleteCommand(sock, msg, args); break;
+       case "antideletestatus": await antideletestatusCommand(sock, msg, args); break;
+       case "antiedit": await antieditCommand(sock, msg, args); break;
+       case "antiviewonce": await antiviewonceCommand(sock, msg, args); break;
+       case "antibug": await antibugCommand(sock, msg, args); break;
+       // Bad words
+       case "addbadword": await addbadwordCommand(sock, msg, args); break;
+       case "delbadword": case "deletebadword": await deletebadwordCommand(sock, msg, args); break;
+       case "listbadword": await listbadwordCommand(sock, msg); break;
+       // Country codes
+       case "addcountrycode": await addcountrycodeCommand(sock, msg, args); break;
+       case "delcountrycode": await delcountrycodeCommand(sock, msg, args); break;
+       case "listcountrycode": await listcountrycodeCommand(sock, msg); break;
+       // Ignore list
+       case "addignorelist": await addignorelistCommand(sock, msg, args); break;
+       case "delignorelist": await delignorelistCommand(sock, msg, args); break;
+       case "listignorelist": await listignorelistCommand(sock, msg); break;
+       // Sudo list
+       case "addsudo": await addsudoCommand(sock, msg, args); break;
+       case "delsudo": await delsudoCommand(sock, msg, args); break;
+       case "listsudo": await listsudoCommand(sock, msg); break;
+       // Menu media
+       case "addmenuimage": await addmenuimageCommand(sock, msg, args); break;
+       case "addmenuvideo": await addmenuvideoCommand(sock, msg, args); break;
+       case "clearmenuimages": await clearmenuimagesCommand(sock, msg); break;
+       case "clearmenuvideo": await clearmenuvideoCommand(sock, msg); break;
 
       // ── Sports ───────────────────────────────────────────────────────────
       case "eplstandings": await eplstandingsCommand(sock, msg); break;

@@ -2,7 +2,7 @@ import type { WASocket, WAMessage } from "@whiskeysockets/baileys";
 import { botState } from "../store.js";
 
 const P = () => botState.botSettings.prefix;
-const BOT_IMAGE_URL = "https://files.catbox.moe/pht92g.jpg";
+const getBotImage = () => botState.botSettings.menuImage || "https://files.catbox.moe/pht92g.jpg";
 
 export async function menuCommand(sock: WASocket, msg: WAMessage) {
   const jid = msg.key.remoteJid!;
@@ -32,7 +32,7 @@ ${modeIcon} *Mode:* ${mode.toUpperCase()}
 
   try {
     await sock.sendMessage(jid, {
-      image: { url: BOT_IMAGE_URL },
+      image: { url: getBotImage() },
       caption: menu,
     }, { quoted: msg });
   } catch {

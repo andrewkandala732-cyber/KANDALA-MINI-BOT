@@ -34,22 +34,47 @@ export interface BotSettings {
   ownerNumber: string;
   prefix: string;
   mode: "public" | "group" | "private";
-  autoViewStatus: boolean;
-  autoReact: boolean;
-  autoRead: boolean;
-  autoRecord: boolean;
-  antiCall: boolean;
-  antiDelete: boolean;
-  autoSaveStatus: boolean;
-  chatbot: boolean;
-  alwaysOnline: boolean;
-  autoblock: boolean;
+  timezone: string;
   statusEmoji: string;
   watermark: string;
   stickerPackName: string;
   stickerAuthor: string;
   font: number;
-  timezone: string;
+
+  // Auto features
+  autoViewStatus: boolean;
+  autoReact: boolean;
+  autoReactEmoji: string;
+  autoReactStatus: boolean;
+  autoReactStatusEmoji: string;
+  autoRead: boolean;
+  autoRecord: boolean;
+  autoRecordTyping: boolean;
+  autoSaveStatus: boolean;
+  alwaysOnline: boolean;
+  autoblock: boolean;
+  autoBio: boolean;
+  autoBioText: string;
+  chatbot: boolean;
+
+  // Anti features
+  antiCall: boolean;
+  antiCallMessage: string;
+  antiDelete: boolean;
+  antiDeleteStatus: boolean;
+  antiEdit: boolean;
+  antiViewOnce: boolean;
+  antiBug: boolean;
+
+  // Lists
+  badWords: string[];
+  countryCodes: string[];         // allowed country codes e.g. ["254","1","44"]
+  ignoreList: string[];           // JIDs to completely ignore
+  sudoList: string[];             // sudo users (elevated access)
+
+  // Media
+  menuImage: string;
+  menuVideo: string;
 }
 
 export interface BotState {
@@ -107,22 +132,43 @@ export const botState: BotState = {
     ownerNumber: "254743760083",
     prefix: ".",
     mode: "public",
-    autoViewStatus: false,
-    autoReact: false,
-    autoRead: false,
-    autoRecord: false,
-    antiCall: false,
-    antiDelete: false,
-    autoSaveStatus: false,
-    chatbot: false,
-    alwaysOnline: false,
-    autoblock: false,
+    timezone: "Africa/Nairobi",
     statusEmoji: "🤖",
     watermark: "KANDALA MINI BOT",
     stickerPackName: "KANDALA",
     stickerAuthor: "KANDALA BOT",
     font: 0,
-    timezone: "Africa/Nairobi",
+
+    autoViewStatus: false,
+    autoReact: false,
+    autoReactEmoji: "❤️",
+    autoReactStatus: false,
+    autoReactStatusEmoji: "❤️",
+    autoRead: false,
+    autoRecord: false,
+    autoRecordTyping: false,
+    autoSaveStatus: false,
+    alwaysOnline: false,
+    autoblock: false,
+    autoBio: false,
+    autoBioText: "",
+    chatbot: false,
+
+    antiCall: false,
+    antiCallMessage: "❌ This bot does not accept calls.",
+    antiDelete: false,
+    antiDeleteStatus: false,
+    antiEdit: false,
+    antiViewOnce: false,
+    antiBug: true,
+
+    badWords: [],
+    countryCodes: [],
+    ignoreList: [],
+    sudoList: [],
+
+    menuImage: "https://files.catbox.moe/pht92g.jpg",
+    menuVideo: "",
   },
 };
 
@@ -131,4 +177,11 @@ export function getGroupSettings(jid: string): GroupSettings {
     botState.groupSettings.set(jid, defaultGroupSettings());
   }
   return botState.groupSettings.get(jid)!;
+}
+
+/** Check if JID is owner or sudo */
+export function isOwnerOrSudo(jid: string): boolean {
+  const bare = jid.split("@")[0]!;
+  if (bare === botState.ownerJid.split("@")[0]) return true;
+  return botState.botSettings.sudoList.some(s => s.split("@")[0] === bare);
 }
